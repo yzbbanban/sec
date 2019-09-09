@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzb.sec.dao.SysManageUserDao">
+
+    <sql id="baseManageUser">
+        id , account , pass ,  realName , locked ,salt,
+        createTime , updateTime , mobile
+    </sql>
+    <!--保存系统管理用户信息-->
+    <insert id="saveSysManageUser">
+        INSERT INTO manage_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="account != null">
+                account,
+            </if>
+            <if test="pass != null">
+                pass,
+            </if>
+            <if test="realName != null">
+                realName,
+            </if>
+            <if test="salt != null">
+                salt,
+            </if>
+            <if test="locked != null">
+                locked,
+            </if>
+            createTime,
+            updateTime,
+            <if test="mobile != null">
+                mobile,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="pass != null">
+                #{pass,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="salt != null">
+                #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="locked != null">
+                #{locked,jdbcType=BIT},
+            </if>
+            unix_timestamp(NOW()),
+            unix_timestamp(NOW()),
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <insert id="mangeReg">
+        INSERT INTO manage_user set account=#{account},pass=#{pass}
+    </insert>
+    <!--更新系统管理用户信息-->
+    <update id="updateSysManageUser">
+        UPDATE manage_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="account != null">
+                account = #{account},
+            </if>
+            <if test="realName != null">
+                realName = #{realName},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile},
+            </if>
+            updateTime = unix_timestamp(NOW()),
+        </trim>
+        WHERE
+        id = #{id}
+    </update>
+
+    <!--更新系统管理用户锁定信息-->
+    <update id="updateSysManageUserLockInfo">
+        UPDATE manage_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="locked != null">
+                locked = #{locked},
+            </if>
+            updateTime = unix_timestamp(NOW()),
+        </trim>
+        WHERE
+        1=1 and locked!=#{locked} and
+        id = #{id}
+    </update>
+    <!--更新用户名密码-->
+    <update id="updateSysManageUserPwd">
+        UPDATE manage_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="pass != null">
+                pass = #{pass},
+            </if>
+            <if test="salt != null">
+                salt = #{salt},
+            </if>
+            updateTime = unix_timestamp(NOW()),
+        </trim>
+        WHERE
+        id = #{id}
+    </update>
+    <!--删除系统管理用户信息-->
+    <delete id="removeSysManageUser">
+        DELETE FROM manage_user WHERE id = #{id}
+    </delete>
+    <!--根据系统管理用户id获取系统管理用户信息-->
+    <select id="getSysManageUserById" resultType="com.yzb.sec.domain.orm.SysManageUser">
+        SELECT
+        <include refid="baseManageUser"></include>
+        FROM manage_user
+        WHERE
+        id = #{id}
+    </select>
+    <!--根据系统用户id获取用户系统视图信息-->
+    <select id="getSysManageUserVOById" resultType="com.yzb.sec.domain.vo.SysManageUserVO">
+        SELECT
+        <include refid="baseManageUser"></include>
+        FROM manage_user
+        WHERE
+        id = #{id}
+    </select>
+    <!--根据登录名获取系统用户信息-->
+    <select id="getSysManageUserByAccount" resultType="com.yzb.sec.domain.orm.SysManageUser">
+        SELECT
+        <include refid="baseManageUser"></include>
+        FROM manage_user
+        WHERE
+        account = #{account}
+    </select>
+    <!--分页获取所有系统管理用户信息-->
+    <select id="listSysManageUser" resultType="com.yzb.sec.domain.vo.SysManageUserVO">
+        select sr.roleName as roleName,
+        su.id,su.realName,su.account,su.locked,su.createtime,su.updateTime,su.mobile
+        from
+        manage_role_relation sur INNER JOIN manage_role sr
+        on sur.sysRoleId=sr.id
+        INNER JOIN
+        manage_user su
+        on su.id=sur.sysUserId
+        limit #{pageNo},#{pageSize}
+    </select>
+
+
+    <!--验证用户是否存在-->
+    <select id="getSysManageUserByPhone" resultType="java.lang.Integer">
+      SELECT COUNT(1)
+       FROM manage_user
+       WHERE mobile=#{mobile}
+    </select>
+
+    <select id="getSysManageUser" resultType="com.yzb.sec.domain.orm.SysManageUser">
+        SELECT
+        <include refid="baseManageUser"></include>
+        FROM manage_user
+        WHERE mobile=#{mobile}
+    </select>
+
+    <!--获取系统用户数量-->
+    <select id="getSysManageUserCount" resultType="int">
+      SELECT COUNT(1)
+      FROM manage_user
+    </select>
+    <select id="loadUserByUsername" resultType="com.yzb.sec.domain.orm.SysManageUser">
+        SELECT *
+      FROM manage_user where account=#{account}
+    </select>
+
+
+</mapper>

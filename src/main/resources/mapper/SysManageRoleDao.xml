@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yzb.sec.dao.SysManageRoleDao">
+
+    <sql id="baseManageRole">
+        id , roleName , roleKey , roleStatus
+    </sql>
+    <!--保存系统管理角色信息-->
+    <insert id="saveSysManageRole">
+        INSERT INTO manage_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleName != null">
+                roleName,
+            </if>
+            <if test="roleKey != null">
+                roleKey,
+            </if>
+            roleStatus,
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleKey != null">
+                #{roleKey,jdbcType=VARCHAR},
+            </if>
+            1,
+        </trim>
+    </insert>
+    <!--更新系统管理角色信息-->
+    <update id="updateSysManageRole">
+        UPDATE manage_role
+        <trim prefix="set" suffixOverrides=",">
+            <if test="roleName != null">
+                roleName = #{roleName},
+            </if>
+            <if test="roleKey != null">
+                roleKey = #{roleKey},
+            </if>
+        </trim>
+        WHERE
+        id = #{id}
+    </update>
+    <!--更新系统管理角色信息状态-->
+    <update id="updateSysManageRoleState">
+        UPDATE manage_role
+        <trim prefix="set" suffixOverrides=",">
+            <if test="roleStatus != null">
+                roleStatus = #{roleStatus},
+            </if>
+        </trim>
+        WHERE
+        1=1 and roleStatus!=#{roleStatus} and
+        id = #{id}
+    </update>
+
+    <!--获取系统管理角色列表-->
+    <select id="listSysManageRole" resultType="com.yzb.sec.domain.orm.SysManageRole">
+        SELECT
+        <include refid="baseManageRole"></include>
+        FROM manage_role
+        limit #{pageNo},#{pageSize}
+    </select>
+    <!--获取系统用户数量-->
+    <select id="getSysManageRoleCount" resultType="int">
+        SELECT COUNT(1)
+        FROM manage_role
+    </select>
+
+
+</mapper>

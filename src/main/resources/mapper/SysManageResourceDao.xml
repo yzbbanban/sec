@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yzb.sec.dao.SysManageResourceDao">
+
+    <sql id="baseManageResource">
+        id , resName , parentId , resKey , resType , resUrl ,
+        useable , sort,createTime , updateTime
+    </sql>
+
+    <!--添加系统资源父节点信息-->
+    <insert id="saveSysManageParentResource">
+        INSERT INTO manage_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resName != null">
+                resName,
+            </if>
+            parentId,
+            <if test="resKey != null">
+                resKey,
+            </if>
+            <if test="resType != null">
+                resType,
+            </if>
+            <if test="resUrl != null">
+                resUrl,
+            </if>
+            <if test="useable != null">
+                useable,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            createTime,
+            updateTime,
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="resName != null">
+                #{resName,jdbcType=VARCHAR},
+            </if>
+            0,
+            <if test="resKey != null">
+                #{resKey,jdbcType=VARCHAR},
+            </if>
+            <if test="resType != null">
+                #{resType,jdbcType=VARCHAR},
+            </if>
+            <if test="resUrl != null">
+                #{resUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="useable != null">
+                #{useable,jdbcType=BIT},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            unix_timestamp(NOW()),
+            unix_timestamp(NOW()),
+        </trim>
+    </insert>
+
+    <!--添加系统资源子节点信息-->
+    <insert id="saveSysManageChildrenResource">
+        INSERT INTO manage_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resName != null">
+                resName,
+            </if>
+            <if test="parentId != null">
+                parentId,
+            </if>
+            <if test="resKey != null">
+                resKey,
+            </if>
+            <if test="resType != null">
+                resType,
+            </if>
+            <if test="resUrl != null">
+                resUrl,
+            </if>
+            <if test="useable != null">
+                useable,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            createTime,
+            updateTime,
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="resName != null">
+                #{resName,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=VARCHAR},
+            </if>
+            <if test="resKey != null">
+                #{resKey,jdbcType=VARCHAR},
+            </if>
+            <if test="resType != null">
+                #{resType,jdbcType=VARCHAR},
+            </if>
+            <if test="resUrl != null">
+                #{resUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="useable != null">
+                #{useable,jdbcType=BIT},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            unix_timestamp(NOW()),
+            unix_timestamp(NOW()),
+        </trim>
+    </insert>
+    <!--更新系统管理资源信息-->
+    <update id="updateSysManageResource">
+        UPDATE manage_resource
+        <trim prefix="set" suffixOverrides=",">
+            <if test="resName != null">
+                resName=#{resName},
+            </if>
+            <if test="parentId != null">
+                parentId=#{parentId},
+            </if>
+            <if test="resKey != null">
+                resKey=#{resKey},
+            </if>
+            <if test="resType != null">
+                resType=#{resType},
+            </if>
+            <if test="resUrl != null">
+                resUrl=#{resUrl},
+            </if>
+            <if test="useable != null">
+                useable=#{useable},
+            </if>
+            <if test="sort != null">
+                sort=#{sort},
+            </if>
+            updateTime=unix_timestamp(NOW()),
+        </trim>
+        WHERE
+        id = #{id}
+    </update>
+    <!--更新系统管理资源信息状态-->
+    <update id="updateSysManageResourceState">
+        UPDATE manage_resource
+        <trim prefix="set" suffixOverrides=",">
+            <if test="useable != null">
+                useable=#{useable},
+            </if>
+            updateTime=unix_timestamp(NOW()),
+        </trim>
+        WHERE
+        id = #{id}
+    </update>
+    <!--根据id删除系统管理资源信息-->
+    <delete id="deleteSysManageResource">
+        DELETE FROM manage_resource WHERE id=#{id}
+    </delete>
+    <!--获取系统管理资源信息-->
+    <select id="getSysManageResourceById" resultType="com.yzb.sec.domain.orm.SysManageResource">
+        SELECT
+        <include refid="baseManageResource"></include>
+        FROM manage_resource
+        WHERE
+        id=#{id};
+    </select>
+    <!--获取所有系统管理资源信息-->
+    <select id="listSysManageResource" resultType="com.yzb.sec.domain.orm.SysManageResource">
+        SELECT
+        <include refid="baseManageResource"></include>
+        FROM manage_resource
+        order by sort desc
+    </select>
+
+    <!--根据父节点获取系统管理资源信息-->
+    <select id="getAllMenu" resultType="com.yzb.sec.domain.vo.Menu">
+        SELECT
+            id,
+            resName,
+            parentId,
+            resKey,
+            resType,
+            resUrl,
+            sort
+        FROM
+            manage_resource
+        WHERE
+            parentId = #{parentId}
+        ORDER BY
+         sort desc ,
+            createTime ASC
+    </select>
+
+    <!--根据父节点获取系统管理资源信息-->
+    <select id="getAllMenuWithRole" resultType="com.yzb.sec.domain.vo.Menu">
+        SELECT
+            mr.id,
+            mr.resName,
+            mr.parentId,
+            mr.resKey,
+            mr.resType,
+            mr.resUrl,
+            mr.sort
+        FROM
+            manage_resource mr LEFT JOIN resource_role_relation rrr ON mr.id=rrr.sysResourceId
+        WHERE
+            mr.parentId = #{parentId}
+            AND
+            rrr.sysRoleId=#{roleId}
+        ORDER BY
+         mr.sort desc ,
+            mr.createTime ASC
+    </select>
+</mapper>

@@ -1,0 +1,32 @@
+server:
+  port: 9099
+
+spring:
+  application:
+      name: sec
+  datasource:
+    url:  jdbc:mysql://192.168.1.117:3306/sms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useUnicode=true&serverTimezone=UTC
+    username:  root
+    password:  wanban
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    database: 0
+    host: 192.168.1.117
+    port: 6379
+    password:
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 100
+        max-wait: 5000
+        max-idle: 20
+        min-idle: 5
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+swagger:
+  show: true
+
+
+

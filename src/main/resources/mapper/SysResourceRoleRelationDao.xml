@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yzb.sec.dao.SysResourceRoleRelationDao">
+
+    <sql id="baseResourceRoleRelation">
+        sysResourceId ,sysRoleId
+    </sql>
+    <!--保存角色与资源的对应关系-->
+    <insert id="saveResRoles">
+        insert into resource_role_relation values
+        <foreach collection="resArr" item="item" index="index" separator=",">
+            (#{item},#{sysRoleId})
+        </foreach>
+    </insert>
+    <!--删除角色与资源的对应-->
+    <delete id="deleteRoleByRoleId">
+      DELETE FROM resource_role_relation
+      WHERE sysRoleId=#{sysRoleId}
+    </delete>
+
+    <!-- 根据主键查询角色与资源关系 -->
+    <select id="getResourceRoleByRoleId" resultType="java.lang.Integer">
+        SELECT COUNT(sysRoleId) FROM resource_role_relation
+        WHERE  sysRoleId = #{sysRoleId}
+    </select>
+
+    <!-- 根据主键查询角色与资源关系 -->
+    <select id="getResourceRole" resultType="java.lang.Integer">
+        SELECT COUNT(sysResourceId) FROM resource_role_relation
+        WHERE  sysRoleId = #{sysRoleId} AND sysResourceId = #{sysResourceId}
+    </select>
+
+
+</mapper>

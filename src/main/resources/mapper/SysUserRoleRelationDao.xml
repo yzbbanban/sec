@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yzb.sec.dao.SysUserRoleRelationDao">
+
+    <sql id="baseUserRoleRelation">
+        sysUserId ,sysRoleId
+    </sql>
+    <insert id="saveUserRole">
+        INSERT INTO manage_role_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysUserId != null">
+                sysUserId,
+            </if>
+            <if test="sysRoleId != null">
+                sysRoleId,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="sysUserId != null">
+                #{sysUserId,jdbcType=INTEGER},
+            </if>
+            <if test="sysRoleId != null">
+                #{sysRoleId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateUserRole">
+        UPDATE manage_role_relation
+        SET
+          sysRoleId = #{sysRoleId}
+        WHERE
+          sysUserId = #{sysUserId}
+    </update>
+    <select id="getRoleIdByUserId" resultType="java.lang.Integer">
+        SELECT
+            sysRoleId
+        FROM
+            manage_role_relation
+        WHERE
+            sysUserId = #{sysUserId}
+    </select>
+
+</mapper>
