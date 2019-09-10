@@ -5,6 +5,7 @@ import com.yzb.sec.config.common.util.SysManageUserUtils;
 import com.yzb.sec.domain.result.ResultJson;
 import com.yzb.sec.service.impl.SysMangeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
@@ -50,6 +51,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
 
+    @Bean
+    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+        return new JwtAuthenticationTokenFilter();
+    }
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/index.html", "/static/**", "/login_p", "/favicon.ico");
@@ -67,6 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     }
                 })
                 .and()
+                .csrf().disable()
                 .formLogin().loginPage("/login_p").loginProcessingUrl("/login")
                 .usernameParameter("account").passwordParameter("pass")
                 .failureHandler(new AuthenticationFailureHandler() {

@@ -1,5 +1,5 @@
 server:
-  port: 9099
+  port: 9091
 
 spring:
   application:
@@ -27,6 +27,17 @@ mybatis:
     map-underscore-to-camel-case: true
 swagger:
   show: true
+# JWT 604800
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 10
+  tokenHead: Bearer
+  route:
+    authentication:
+      path: auth/login
+      refresh: auth/refresh
+      register: "auth/register"
 
 
 
