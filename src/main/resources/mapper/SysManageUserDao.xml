@@ -167,10 +167,25 @@
       SELECT COUNT(1)
       FROM manage_user
     </select>
-    <select id="loadUserByUsername" resultType="com.yzb.sec.domain.orm.SysManageUser">
+    <select id="loadUserByUsername" resultMap="lazyLoadRoles">
         SELECT *
       FROM manage_user where account=#{account}
     </select>
 
-
+    <resultMap id="lazyLoadRoles" type="com.yzb.sec.domain.orm.SysManageUser" extends="BaseResultMap">
+        <collection property="roles" ofType="com.yzb.sec.domain.orm.SysManageRole"
+                    select="com.yzb.sec.dao.SysManageUserDao.getRolesByManageId"
+                    column="id"></collection>
+    </resultMap>
+    <resultMap id="BaseResultMap" type="com.yzb.sec.domain.orm.SysManageUser">
+        <id column="id" property="id"/>
+        <result column="account" property="account"/>
+        <result column="pass" property="pass"/>
+        <result column="realName" property="realName"/>
+        <result column="locked" property="locked"/>
+        <result column="mobile" property="mobile"/>
+    </resultMap>
+    <select id="getRolesByManageId" resultType="com.yzb.sec.domain.orm.SysManageRole">
+        SELECT r.* FROM  manage_role_relation h,manage_role r where h.sysRoleId=r.id AND h.sysUserId=#{id}
+    </select>
 </mapper>

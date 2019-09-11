@@ -24,8 +24,6 @@ public class SysMangeServiceImpl extends BaseImpl implements UserDetailsService 
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        String code = getHttpParam("code").get(0);
-        logger.info("===code===>" + code);
         logger.info("===s===>" + s);
         SysManageUser sysManageUser = manageUserDao.loadUserByUsername(s);
         if (sysManageUser == null) {

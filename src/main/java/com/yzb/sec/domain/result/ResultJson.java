@@ -1,7 +1,10 @@
 package com.yzb.sec.domain.result;
 
+import java.util.List;
+
 /**
- * Created by brander on 2019/1/12
+ * @author wangban
+ * @data 2019/9/11 16:16
  */
 public class ResultJson<T> {
     private Integer code;
@@ -10,7 +13,7 @@ public class ResultJson<T> {
 
     private T data;
 
-    public ResultJson() {
+    public ResultJson(ResultList resultList) {
     }
 
     private ResultJson(int code) {
@@ -62,7 +65,8 @@ public class ResultJson<T> {
         this.message = code.getMessage();
     }
 
-    //正确信息
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 正确信息 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
     public static <T> ResultJson<T> createBySuccess() {
         return new ResultJson<T>(ResultStatus.OK.getCode(), ResultStatus.OK.getMessage());
     }
@@ -79,7 +83,8 @@ public class ResultJson<T> {
         return new ResultJson<T>(ResultStatus.OK.getCode(), msg, data);
     }
 
-    //错误信息
+    // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 错误信息 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
     public static <T> ResultJson<T> createByError() {
         return new ResultJson<T>(ResultStatus.ERROR.getCode(), ResultStatus.ERROR.getMessage());
     }
@@ -97,6 +102,9 @@ public class ResultJson<T> {
         return new ResultJson<T>(ResultStatus.NO_AUTH.getCode(), ResultStatus.NO_AUTH.getMessage());
     }
 
+    public static <T> ResultJson<ResultList<T>> createList(int count, List<T> list) {
+        return new ResultJson<>(new ResultList<>(count, list));
+    }
 
     @Override
     public String toString() {

@@ -1,5 +1,5 @@
 
-package com.yzb.sec.domain.orm;
+package com.yzb.sec.domain.constant;
 
 /**
  * @author wangban

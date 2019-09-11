@@ -10,14 +10,14 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by brander on 2019/1/12
+ * @author wangban
+ * @data 2019/9/11 15:40
  */
 public class SysManageUser implements UserDetails {
     private Integer id;
     private String account;
     private String pass;
     private String realName;
-    private String salt;
     private Boolean locked;
     private String mobile;
     private List<SysManageRole> roles;
@@ -38,6 +38,7 @@ public class SysManageUser implements UserDetails {
         this.account = account;
     }
 
+    @JsonIgnore
     public String getPass() {
         return pass;
     }
@@ -52,14 +53,6 @@ public class SysManageUser implements UserDetails {
 
     public void setRealName(String realName) {
         this.realName = realName;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
     }
 
     public Boolean getLocked() {
@@ -93,7 +86,6 @@ public class SysManageUser implements UserDetails {
                 ", account='" + account + '\'' +
                 ", pass='" + pass + '\'' +
                 ", realName='" + realName + '\'' +
-                ", salt='" + salt + '\'' +
                 ", locked=" + locked +
                 ", mobile='" + mobile + '\'' +
                 ", roles=" + roles +
@@ -120,23 +112,27 @@ public class SysManageUser implements UserDetails {
         return account;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
-        return false;
+        return !locked;
     }
 }

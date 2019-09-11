@@ -4,15 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yzb.sec.common.util.SysManageUserUtils;
 import com.yzb.sec.domain.result.ResultJson;
 import com.yzb.sec.service.impl.SysMangeServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -21,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -28,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  * @author wangban
@@ -36,6 +40,9 @@ import java.io.PrintWriter;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     SysMangeServiceImpl hrService;
     @Autowired
@@ -45,10 +52,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     AuthenticationAccessDeniedHandler deniedHandler;
 
+    @Autowired
+    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(hrService)
-                .passwordEncoder(new BCryptPasswordEncoder());
+        auth.authenticationProvider(authenticationProvider());
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setHideUserNotFoundExceptions(false);
+        provider.setUserDetailsService(hrService);
+        provider.setPasswordEncoder(new BCryptPasswordEncoder());
+        return provider;
     }
 
     @Bean
@@ -57,13 +76,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/index.html", "/static/**", "/login_p", "/favicon.ico");
-    }
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/v1/auth/login", "/v1/auth/logout").permitAll().anyRequest().authenticated()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
@@ -74,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 })
                 .and()
                 .csrf().disable()
-                .formLogin().loginPage("/login_p").loginProcessingUrl("/login")
+                .formLogin().loginProcessingUrl("/v1/auth/login")
                 .usernameParameter("account").passwordParameter("pass")
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override
@@ -122,7 +137,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
-                .logoutUrl("/logout")
+                .logoutUrl("/v1/auth/logout")
                 .logoutSuccessHandler(new LogoutSuccessHandler() {
                     @Override
                     public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
@@ -138,5 +153,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and().csrf().disable()
                 .exceptionHandling().accessDeniedHandler(deniedHandler);
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 }
