@@ -12,6 +12,11 @@ public class MessageConstant {
      */
     public static final String SYSTEM_SMS_MANAGE_LOGIN_CODE_PHONE = "SYSTEM_SMS_MANAGE_LOGIN_CODE_PHONE:";
 
+    /**
+     * 管理端登录短信 使用用户标识
+     */
+    public static final String SYSTEM_SMS_MANAGE_LOGIN_CODE_ACCOUNT = "SYSTEM_SMS_MANAGE_LOGIN_CODE_ACCOUNT:";
+
 
     /**
      * 管理端更改密码短信

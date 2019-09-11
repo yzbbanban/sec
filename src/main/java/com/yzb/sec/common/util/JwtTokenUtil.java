@@ -1,5 +1,6 @@
 package com.yzb.sec.common.util;
 
+import com.yzb.sec.domain.orm.SysAuthUser;
 import com.yzb.sec.domain.orm.SysManageUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -120,7 +121,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        SysManageUser user = (SysManageUser) userDetails;
+        SysAuthUser user = (SysAuthUser) userDetails;
         final String username = getUsernameFromToken(token);
         final Date created = getCreatedDateFromToken(token);
 //        final Date expiration = getExpirationDateFromToken(token);

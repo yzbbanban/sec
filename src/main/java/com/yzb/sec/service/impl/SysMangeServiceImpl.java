@@ -1,7 +1,7 @@
 package com.yzb.sec.service.impl;
 
 import com.yzb.sec.dao.SysManageUserDao;
-import com.yzb.sec.domain.orm.SysManageUser;
+import com.yzb.sec.domain.orm.SysAuthUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,7 +25,7 @@ public class SysMangeServiceImpl extends BaseImpl implements UserDetailsService 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         logger.info("===s===>" + s);
-        SysManageUser sysManageUser = manageUserDao.loadUserByUsername(s);
+        SysAuthUser sysManageUser = manageUserDao.loadUserByUsername(s);
         if (sysManageUser == null) {
             throw new UsernameNotFoundException("用户名不对");
         }

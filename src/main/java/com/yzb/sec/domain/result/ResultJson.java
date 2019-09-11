@@ -13,7 +13,7 @@ public class ResultJson<T> {
 
     private T data;
 
-    public ResultJson(ResultList resultList) {
+    public ResultJson() {
     }
 
     private ResultJson(int code) {
@@ -103,7 +103,7 @@ public class ResultJson<T> {
     }
 
     public static <T> ResultJson<ResultList<T>> createList(int count, List<T> list) {
-        return new ResultJson<>(new ResultList<>(count, list));
+        return createBySuccess(new ResultList<>(count, list));
     }
 
     @Override

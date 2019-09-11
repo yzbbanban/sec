@@ -172,12 +172,12 @@
       FROM manage_user where account=#{account}
     </select>
 
-    <resultMap id="lazyLoadRoles" type="com.yzb.sec.domain.orm.SysManageUser" extends="BaseResultMap">
+    <resultMap id="lazyLoadRoles" type="com.yzb.sec.domain.orm.SysAuthUser" extends="BaseResultMap">
         <collection property="roles" ofType="com.yzb.sec.domain.orm.SysManageRole"
                     select="com.yzb.sec.dao.SysManageUserDao.getRolesByManageId"
                     column="id"></collection>
     </resultMap>
-    <resultMap id="BaseResultMap" type="com.yzb.sec.domain.orm.SysManageUser">
+    <resultMap id="BaseResultMap" type="com.yzb.sec.domain.orm.SysAuthUser">
         <id column="id" property="id"/>
         <result column="account" property="account"/>
         <result column="pass" property="pass"/>

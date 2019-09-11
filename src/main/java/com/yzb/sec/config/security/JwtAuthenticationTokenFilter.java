@@ -2,6 +2,7 @@ package com.yzb.sec.config.security;
 
 import com.yzb.sec.common.util.JwtTokenUtil;
 import com.yzb.sec.config.cache.LocalCache;
+import com.yzb.sec.config.redis.RedisClusterClient;
 import com.yzb.sec.config.security.filter.ValidateCodeException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.yzb.sec.domain.constant.MessageConstant.SMS_REPEAT;
+import static com.yzb.sec.domain.constant.MessageConstant.SYSTEM_SMS_MANAGE_LOGIN_CODE_ACCOUNT;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
@@ -46,6 +48,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     protected LocalCache localCache;
+
+    @Autowired
+    protected RedisClusterClient redisClient;
 
     @Override
     protected void doFilterInternal(
@@ -90,13 +95,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if (StringUtils.isBlank(codeInRequest)) {
             throw new ValidateCodeException("验证码的值不能为空");
         }
-        if (isCodeRepeat(account)) {
-            throw new ValidateCodeException("发送频率过快");
-        }
         if (!getCode(account, codeInRequest)) {
             throw new ValidateCodeException("验证码错误");
         }
 
+        redisClient.delCacheByKey(SYSTEM_SMS_MANAGE_LOGIN_CODE_ACCOUNT + account);
     }
 
     /**
@@ -106,20 +109,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
      * @return 是否正确
      */
     protected boolean getCode(String account, String code) {
-        String smsCode = localCache.getCache(account);
-        smsCode="1111";
+//        String smsCode = localCache.getCache(account);
+        String smsCode = redisClient.get(SYSTEM_SMS_MANAGE_LOGIN_CODE_ACCOUNT + account);
         return code.equals(smsCode);
     }
 
-    /**
-     * 是否重复发送
-     *
-     * @param account 账户
-     * @return 是否正确
-     */
-    protected boolean isCodeRepeat(String account) {
-        String smsCode = localCache.getCache(SMS_REPEAT + account);
-        return StringUtils.isNotBlank(smsCode);
-    }
+
 }
 

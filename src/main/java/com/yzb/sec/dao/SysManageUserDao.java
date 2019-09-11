@@ -6,6 +6,7 @@ import com.yzb.sec.domain.dto.SysManageUserLockDTO;
 import com.yzb.sec.domain.dto.SysManageUserUpdateDTO;
 import com.yzb.sec.domain.orm.PageParamDTO;
 import com.yzb.sec.domain.orm.SysManageRole;
+import com.yzb.sec.domain.orm.SysAuthUser;
 import com.yzb.sec.domain.orm.SysManageUser;
 import com.yzb.sec.domain.vo.SysManageUserVO;
 
@@ -121,7 +122,7 @@ public interface SysManageUserDao {
      * @param account account
      * @return 管理员信息
      */
-    SysManageUser loadUserByUsername(String account);
+    SysAuthUser loadUserByUsername(String account);
 
     /**
      * 获取管理员角色

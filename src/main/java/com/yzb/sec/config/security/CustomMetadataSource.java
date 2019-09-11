@@ -21,13 +21,17 @@ import java.util.List;
 @Component
 public class CustomMetadataSource implements FilterInvocationSecurityMetadataSource {
     @Autowired
-    private ISysManageResourceService menuService;
+    ISysManageResourceService menuService;
 
-    private AntPathMatcher antPathMatcher = new AntPathMatcher();
+    AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) {
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
+        //如果是短信发送，则不需要登录
+        if (requestUrl.contains("sms")) {
+            return SecurityConfig.createList(requestUrl);
+        }
         List<Menu> allMenu = menuService.getAllMenu();
         for (Menu menu : allMenu) {
             if (antPathMatcher.match(menu.getResUrl(), requestUrl)
