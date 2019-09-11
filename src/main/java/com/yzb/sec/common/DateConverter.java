@@ -1,4 +1,4 @@
-package com.yzb.sec.config.common;
+package com.yzb.sec.common;
 
 import org.springframework.core.convert.converter.Converter;
 

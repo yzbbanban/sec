@@ -1,7 +1,7 @@
 package com.yzb.sec.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yzb.sec.config.common.util.SysManageUserUtils;
+import com.yzb.sec.common.util.SysManageUserUtils;
 import com.yzb.sec.domain.result.ResultJson;
 import com.yzb.sec.service.impl.SysMangeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

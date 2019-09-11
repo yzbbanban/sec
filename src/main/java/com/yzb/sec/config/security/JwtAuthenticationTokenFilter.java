@@ -1,6 +1,6 @@
 package com.yzb.sec.config.security;
 
-import com.yzb.sec.config.common.util.JwtTokenUtil;
+import com.yzb.sec.common.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

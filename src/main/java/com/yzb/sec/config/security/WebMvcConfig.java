@@ -1,6 +1,6 @@
 package com.yzb.sec.config.security;
 
-import com.yzb.sec.config.common.DateConverter;
+import com.yzb.sec.common.DateConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;

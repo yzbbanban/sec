@@ -16,14 +16,18 @@ import org.springframework.stereotype.Service;
  * @data 2019/9/2 17:14
  */
 @Service
-public class SysMangeServiceImpl implements UserDetailsService {
+public class SysMangeServiceImpl extends BaseImpl implements UserDetailsService {
+
 
     @Autowired
     private SysManageUserDao manageUserDao;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        SysManageUser sysManageUser =manageUserDao.loadUserByUsername(s);
+        String code = getHttpParam("code").get(0);
+        logger.info("===code===>" + code);
+        logger.info("===s===>" + s);
+        SysManageUser sysManageUser = manageUserDao.loadUserByUsername(s);
         if (sysManageUser == null) {
             throw new UsernameNotFoundException("用户名不对");
         }
@@ -32,6 +36,7 @@ public class SysMangeServiceImpl implements UserDetailsService {
 
     /**
      * 注册
+     *
      * @param username 名称
      * @param password 密码
      * @return 结果

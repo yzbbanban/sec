@@ -137,6 +137,6 @@ public class SysManageUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return locked;
+        return false;
     }
 }

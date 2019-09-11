@@ -1,4 +1,4 @@
-package com.yzb.sec.config.common.util;
+package com.yzb.sec.common.util;
 
 import com.yzb.sec.domain.orm.SysManageUser;
 import io.jsonwebtoken.Claims;
