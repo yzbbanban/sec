@@ -20,6 +20,7 @@ public class SysAuthUser implements UserDetails {
     private String realName;
     private Boolean locked;
     private String mobile;
+    private String token;
     private List<SysManageRole> roles;
 
     public Integer getId() {
@@ -71,6 +72,14 @@ public class SysAuthUser implements UserDetails {
         this.mobile = mobile;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public List<SysManageRole> getRoles() {
         return roles;
     }
@@ -81,13 +90,14 @@ public class SysAuthUser implements UserDetails {
 
     @Override
     public String toString() {
-        return "SysManageUser{" +
+        return "SysAuthUser{" +
                 "id=" + id +
                 ", account='" + account + '\'' +
                 ", pass='" + pass + '\'' +
                 ", realName='" + realName + '\'' +
                 ", locked=" + locked +
                 ", mobile='" + mobile + '\'' +
+                ", token='" + token + '\'' +
                 ", roles=" + roles +
                 '}';
     }

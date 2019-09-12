@@ -23,7 +23,7 @@ public class UrlAccessDecisionManager  implements AccessDecisionManager {
         Iterator<ConfigAttribute> iterator = cas.iterator();
         while (iterator.hasNext()) {
             ConfigAttribute ca = iterator.next();
-            //当前请求需要的权限
+            //当前请求需要的权限*
             String needRole = ca.getAttribute();
             //过滤swagger、登录短信
             if (needRole.contains("sms")) {

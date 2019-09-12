@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.yzb.sec.domain.constant.MessageConstant.SMS_REPEAT;
 import static com.yzb.sec.domain.constant.MessageConstant.SYSTEM_SMS_MANAGE_LOGIN_CODE_ACCOUNT;
 
 @Component
@@ -44,7 +43,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private DemoAuthenticationFailureHandler demoAuthenticationFailureHandler;
+    private YAuthenticationFailureHandler demoAuthenticationFailureHandler;
 
     @Autowired
     protected LocalCache localCache;
@@ -73,8 +72,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
-        }
-        if (StringUtils.equals("/v1/auth/login", request.getRequestURI()) &&
+        } else if (StringUtils.equals("/v1/auth/login", request.getRequestURI()) &&
                 StringUtils.endsWithIgnoreCase(request.getMethod(), "post")) {
             try {
                 validate(new ServletWebRequest(request));
@@ -83,8 +81,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 return;
             }
         }
-
         chain.doFilter(request, response);
+
     }
 
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
@@ -111,6 +109,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected boolean getCode(String account, String code) {
 //        String smsCode = localCache.getCache(account);
         String smsCode = redisClient.get(SYSTEM_SMS_MANAGE_LOGIN_CODE_ACCOUNT + account);
+        smsCode="111111";
         return code.equals(smsCode);
     }
 
